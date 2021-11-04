@@ -1,0 +1,77 @@
+area_info:
+  name: OR
+  hierarchy: Global
+
+building_info:
+  name: BEAV
+  address: 1400 Northeast Compton Drive, Beaverton, Oregon 97006, United States
+  lat: 45.5313708
+  long: -122.8811613
+
+floor_info:
+  name: Main
+  number: 2
+  rf_model: Cubes And Walled Offices
+  width: 100
+  length: 50
+  height: 10
+
+network_settings:
+  dns_server: 171.70.168.183
+  dhcp_server: 10.93.141.1
+  ntp_server: 171.68.38.66
+  syslog_server: 10.93.141.37
+  aaa_server: 10.93.141.38
+
+devices_info:
+  device_ips: [10.93.141.19, 10.93.141.20, 10.93.141.28]
+
+fabric_info:
+  name: Main
+
+ip_pool:
+  name: Global_Fabric_Pool
+  type: Generic
+  subnet: 10.200.0.0/20
+  gateway: 10.200.1.1
+  dhcp_server: 10.93.141.46
+  dns_server: 10.93.141.46
+  address_family: IPv4
+
+ip_sub_pool:
+  name: BEAV_Fabric_Subpool
+  type: Generic
+  subnet: 10.200.1.0/24
+  gateway: 10.200.1.1
+  dhcp_server: 10.93.141.46
+  dns_server: 10.93.141.46
+  address_family: IPv4
+
+ip_transit_pool:
+  name: BEAV_Transit_Pool
+  type: Generic
+  subnet: 10.200.2.0/24
+  gateway: 10.200.2.1
+  dhcp_server: 10.93.141.46
+  address_family: IPv4
+
+l3_vn:
+  name: Servers
+
+border_devices:
+  ip: [10.93.141.19]
+  routing_protocol: BGP
+  internal_bgp_as: 65001
+  external_bgp_as: 65002
+  external_interface: FortyGigabitEthernet1/1/1
+  transit_network: IP_Transit
+  transit_vlan: 602
+
+control_plane_devices:
+  ip: [10.93.141.20]
+
+edge_devices:
+  ip: [10.93.141.28]
+
+auth_profile:
+  name: No Authentication

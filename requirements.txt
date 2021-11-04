@@ -1,0 +1,12 @@
+requests
+urllib3
+flask
+Flask-BasicAuth
+fpdf
+requests_toolbelt
+dnacentersdk
+pyopenssl
+python-dotenv
+ansible
+PyYAML
+
