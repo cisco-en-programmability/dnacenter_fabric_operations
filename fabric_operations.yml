@@ -4,13 +4,13 @@ area_info:
 
 building_info:
   name: BEAV
-  address: 1400 Northeast Compton Drive, Beaverton, Oregon 97006, United States
-  lat: 45.5313708
-  long: -122.8811613
+  address: 1600 Northeast Compton Drive, Beaverton, Oregon 97006, United States
+  lat: 45.532297
+  long: -122.881111
 
 floor_info:
   name: Main
-  number: 2
+  number: 1
   rf_model: Cubes And Walled Offices
   width: 100
   length: 50
@@ -24,7 +24,8 @@ network_settings:
   aaa_server: 10.93.141.38
 
 devices_info:
-  device_ips: [10.93.141.19, 10.93.141.20, 10.93.141.28]
+  device_ips: [10.93.141.20, 10.93.141.28, 10.93.141.17]
+  device_roles: [control-plane, border, edge]
 
 fabric_info:
   name: Main
@@ -58,20 +59,20 @@ ip_transit_pool:
 l3_vn:
   name: Servers
 
-border_devices:
-  ip: [10.93.141.19]
-  routing_protocol: BGP
-  internal_bgp_as: 65001
-  external_bgp_as: 65002
-  external_interface: FortyGigabitEthernet1/1/1
-  transit_network: IP_Transit
-  transit_vlan: 602
-
 control_plane_devices:
   ip: [10.93.141.20]
 
-edge_devices:
+border_devices:
   ip: [10.93.141.28]
+  routing_protocol: BGP
+  internal_bgp_as: 65001
+  external_bgp_as: 65002
+  external_interface: TenGigabitEthernet1/1/1
+  transit_network: IP_Transit
+  transit_vlan: 602
+
+edge_devices:
+  ip: [10.93.141.17]
 
 auth_profile:
   name: No Authentication
