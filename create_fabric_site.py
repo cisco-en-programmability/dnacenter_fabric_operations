@@ -230,6 +230,7 @@ def main():
     with open('fabric_operations.yml', 'r') as file:
         project_data = yaml.safe_load(file)
 
+    print('\n\nProject Details:\n')
     pprint(project_data)
 
     # parse the input data
@@ -302,6 +303,7 @@ def main():
     dnac_auth = get_dnac_token(DNAC_AUTH)
     
     # create a new area
+    print('\nCreating a new area:', area_name)
     area_payload = {
         "type": "area",
         "site": {
@@ -312,27 +314,27 @@ def main():
         }
     }
     response = dnac_api.sites.create_site(payload=area_payload)
-    print('\nCreating a new area:', area_name)
     time_sleep(10)
 
     # create a new building
+    print('\n\nCreating a new building:', building_name)
     building_payload = {
         'type': 'building',
         'site': {
             'building': {
                 'name': building_name,
                 'parentName': 'Global/' + area_name,
+                'address': building_address,
                 'latitude': building_lat,
                 'longitude': building_long
             }
         }
     }
-
     response = dnac_api.sites.create_site(payload=building_payload)
-    print('\n\nCreating a new building:', building_name)
     time_sleep(10)
 
     # create a new floor
+    print('\n\nCreating a new floor:', floor_name)
     floor_payload = {
         'type': 'floor',
         'site': {
@@ -346,13 +348,10 @@ def main():
             }
         }
     }
-
     response = dnac_api.sites.create_site(payload=floor_payload)
-    print('\n\nCreating a new floor:', floor_name)
     time_sleep(10)
 
     # create site network settings
-    
     network_settings_payload = {
         'settings': {
             'dhcpServer': [
@@ -375,15 +374,15 @@ def main():
     }
 
     # get the site_id
-    response = dnac_api.sites.get_site(name=site_hierarchy)
-    site_id = response['response'][0]['id']
-
-    response = dnac_api.network_settings.create_network(site_id=site_id, payload=network_settings_payload)
     print('\n\nConfiguring Network Settings:')
     pprint(project_data['network_settings'])
+    response = dnac_api.sites.get_site(name=site_hierarchy)
+    site_id = response['response'][0]['id']
+    response = dnac_api.network_settings.create_network(site_id=site_id, payload=network_settings_payload)
     time_sleep(10)
 
     # add devices to inventory
+    print('\n\nAdding devices to inventory: ')
     for ip_address in device_ips:
         add_device_payload = {
             "cliTransport": "ssh",
@@ -398,10 +397,10 @@ def main():
         }
         response = dnac_api.devices.add_device(payload=add_device_payload)
         time.sleep(5)
-    print('\n\nAdding devices to inventory: ')
     time_sleep(60)
 
     # add devices to site
+    print('\n\nAssigning devices to site:', site_hierarchy)
     for ip_address in device_ips:
         assign_device_payload = {
             'device': [
@@ -411,18 +410,16 @@ def main():
             ]
         }
         response = dnac_api.sites.assign_device_to_site(site_id=site_id, payload=assign_device_payload)
-
-    print('\n\nAdding devices to site:', site_hierarchy)
     time_sleep(60)
 
     # provision devices
+    print('\n\nProvisioning devices to site:', site_hierarchy)
     for ip_address in device_ips:
         response = provision_device(ip_address, site_hierarchy, dnac_auth)
-
-    print('\n\nProvisioning devices to site:', site_hierarchy)
     time_sleep(60)
     
     # create a new Global Pool
+    print('\n\nCreating the Global Pool: ', ip_pool_name)
     global_pool_payload = {
         'settings': {
             'ippool': [
@@ -442,20 +439,13 @@ def main():
             ]
         }
     }
-
     response = dnac_api.network_settings.create_global_pool(payload=global_pool_payload)
-    pprint(response)
-    print('\n\nCreating the Global Pool: ', ip_pool_name)
     time_sleep(10)
 
     # create an IP sub_pool for site_hierarchy
     ip_sub_pool_subnet = ip_sub_pool_cidr.split('/')[0]
     ip_sub_pool_mask = int(ip_sub_pool_cidr.split('/')[1])
-
-    # get the site_id
-    response = dnac_api.sites.get_site(name=site_hierarchy)
-    site_id = response['response'][0]['id']
-
+    print('\n\nCreating the IP subpool: ', ip_pool_cidr)
     sub_pool_payload = {
         'name': ip_sub_pool_name,
         'type': ip_sub_pool_type,
@@ -476,15 +466,13 @@ def main():
         'ipv6PrefixLength': 96,
         'ipv6Subnet': '2001:2021::1000'
         }
-
     response = dnac_api.network_settings.reserve_ip_subpool(site_id=site_id, payload=sub_pool_payload)
-    print('\n\nCreating the IP subpool: ', ip_pool_cidr)
     time_sleep(10)
 
     # create an IP transit pool for site_hierarchy
+    print('\n\nCreating the IP transit pool: ', ip_transit_pool_cidr)
     ip_transit_pool_subnet = ip_transit_pool_cidr.split('/')[0]
     ip_transit_pool_mask = int(ip_transit_pool_cidr.split('/')[1])
-
     transit_pool_payload = {
         'name': ip_transit_pool_name,
         'type': ip_transit_pool_type,
@@ -502,46 +490,42 @@ def main():
         'ipv6PrefixLength': 96,
         'ipv6Subnet': '2001:2021::1000'
         }
-
     response = dnac_api.network_settings.reserve_ip_subpool(site_id=site_id, payload=transit_pool_payload)
-    print('\n\nCreating the IP transit pool: ', ip_pool_cidr)
     time_sleep(10)
 
     # create a new fabric at site
-    response = create_fabric_site(site_hierarchy, dnac_auth)
     print('\n\nCreating new fabric at site:', site_hierarchy)
+    response = create_fabric_site(site_hierarchy, dnac_auth)
     time_sleep(15)
 
     # create L3 VN at global level
+    print('\n\nCreating new L3 Virtual Network: ', l3_vn_name)
     l3_vn_payload = {
         'virtualNetworkName': l3_vn_name,
         "isGuestVirtualNetwork": False,
     }
     response = dnac_api.sda.add_virtual_network_with_scalable_groups(payload=l3_vn_payload)
-    print('\n\nCreating new L3 Virtual Network: ', l3_vn_name)
     time_sleep(5)
 
     # assign Layer 3 VN to fabric
-    response = create_l3_vn(l3_vn_name, site_hierarchy, dnac_auth)
     print('\n\nAssign L3 Virtual Network: ', l3_vn_name)
+    response = create_l3_vn(l3_vn_name, site_hierarchy, dnac_auth)
     time_sleep(5)
 
     # add auth profile to fabric
-    response = create_auth_profile(default_auth_profile, site_hierarchy, dnac_auth)
-    pprint(response)
     print('\n\nAdding default auth profile to fabric: ', default_auth_profile)
-    time_sleep(15)
+    response = create_auth_profile(default_auth_profile, site_hierarchy, dnac_auth)
+    time_sleep(5)
 
     # add control-plane node to fabric
+    print('\n\nAdding control-plane devices to fabric: ', control_plane_device_ips)
     for device_ip in control_plane_device_ips:
         response = add_control_plane_node(device_ip, site_hierarchy, dnac_auth)
-        pprint(response)
-        time.sleep(5)
-    print('\n\nAdding control-plane devices to fabric: ', control_plane_device_ips)
-    time_sleep(15)
+        time.sleep(2)
+    time_sleep(5)
 
     # add border node to fabric
-
+    print('\n\nAdding a border node device: ', border_device_ip)
     border_payload = {
         'deviceManagementIpAddress': border_device_ip,
         'siteNameHierarchy': site_hierarchy,
@@ -565,20 +549,15 @@ def main():
             }
         ]
     }
-
-    pprint(border_payload)
     response = add_border_device(border_payload, dnac_auth)
-    pprint(response)
-    print('\n\nAdding a border node device: ', border_device_ip)
-    time_sleep(15)
+    time_sleep(5)
 
     # add edge devices to fabric
+    print('\n\nAdding edge devices to fabric: ', edge_device_ips)
     for device_ip in edge_device_ips:
         response = add_edge_device(device_ip, site_hierarchy, dnac_auth)
-        pprint(response)
-        time.sleep(5)
-    print('\n\nAdding edge devices to fabric: ', edge_device_ips)
-    time_sleep(15)
+        time.sleep(2)
+    time_sleep(5)
 
     current_time = str(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print('\n\nCreate Fabric App Run End, ', current_time)
