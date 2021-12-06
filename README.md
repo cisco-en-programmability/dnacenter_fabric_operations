@@ -13,7 +13,7 @@ This repo is for an application that will use Cisco DNA Center REST APIs to:
 - define a new L3 VN
 - create host onboarding auth profile
 - add control-plane node
-- add border-noe
+- add border-node
 - add edge-node
 
 
