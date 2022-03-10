@@ -29,8 +29,11 @@ This repo is for an application that will use Cisco DNA Center REST APIs to:
 **Usage**
 
 - Create a new Python virtual environment, and activate it - https://docs.python.org/3.9/library/venv.html
-- Install the Python libraries from the "requirements.txt" file - 
-  - (venv) dnacenter_fabric_operations % pip3 install -r requirements.txt
+
+
+- Install the Python libraries from the "requirements.txt" file -
+    - (venv) dnacenter_fabric_operations % pip3 install -r requirements.txt
+
 
 - Create your "environment.env" file:
 
@@ -125,9 +128,13 @@ auth_profile:
 
 ```
 
-The command to run the SDA-as-Code app:
+- Create using the Cisco DNA Center UI an IP transit network (if not already existing). 
+In the provided "fabric_operations.yml" file the name of the IP transit network is "IP_Transit" 
 
-- (venv) dnacenter_fabric_operations % python3 create_fabric_site.py
+
+- The command to run the SDA-as-Code app:
+
+    - (venv) dnacenter_fabric_operations % python3 create_fabric_site.py
 
 
 -------
