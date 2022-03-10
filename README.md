@@ -23,12 +23,25 @@ This repo is for an application that will use Cisco DNA Center REST APIs to:
 
 **Tools & Frameworks:**
 
-- Python environment to run the application
+- Python virtual environment to run the application
 - Cisco DNA Center Python SDK
 
 **Usage**
 
-Sample "fabric_operations.yml"
+- Create a new Python virtual environment, and activate it - https://docs.python.org/3.9/library/venv.html
+- Install the Python libraries from the "requirements.txt" file - 
+  - (venv) dnacenter_fabric_operations % pip3 install -r requirements.txt
+
+- Create your "environment.env" file:
+
+```
+# Cisco DNA Center
+DNAC_URL = 'DNA Center URL/IP address'
+DNAC_USER = 'username'
+DNAC_PASS = 'password'
+```
+
+- Sample "fabric_operations.yml"
 
 ```
 area_info:
@@ -111,6 +124,11 @@ auth_profile:
   name: No Authentication
 
 ```
+
+The command to run the SDA-as-Code app:
+
+- (venv) dnacenter_fabric_operations % python3 create_fabric_site.py
+
 
 -------
 
