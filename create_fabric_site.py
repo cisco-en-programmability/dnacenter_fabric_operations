@@ -331,6 +331,7 @@ def main():
         }
     }
     response = dnac_api.sites.create_site(payload=building_payload)
+    print(response.text)
     time_sleep(10)
 
     # create a new floor
@@ -397,7 +398,7 @@ def main():
         }
         response = dnac_api.devices.add_device(payload=add_device_payload)
         time.sleep(5)
-    time_sleep(60)
+    time_sleep(120)
 
     # add devices to site
     print('\n\nAssigning devices to site:', site_hierarchy)
@@ -410,12 +411,6 @@ def main():
             ]
         }
         response = dnac_api.sites.assign_device_to_site(site_id=site_id, payload=assign_device_payload)
-    time_sleep(60)
-
-    # provision devices
-    print('\n\nProvisioning devices to site:', site_hierarchy)
-    for ip_address in device_ips:
-        response = provision_device(ip_address, site_hierarchy, dnac_auth)
     time_sleep(60)
     
     # create a new Global Pool
@@ -497,6 +492,12 @@ def main():
     print('\n\nCreating new fabric at site:', site_hierarchy)
     response = create_fabric_site(site_hierarchy, dnac_auth)
     time_sleep(15)
+
+    # provision devices
+    print('\n\nProvisioning devices to site:', site_hierarchy)
+    for ip_address in device_ips:
+        response = provision_device(ip_address, site_hierarchy, dnac_auth)
+    time_sleep(120)
 
     # create L3 VN at global level
     print('\n\nCreating new L3 Virtual Network: ', l3_vn_name)

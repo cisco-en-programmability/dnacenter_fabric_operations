@@ -24,7 +24,7 @@ network_settings:
   aaa_server: 10.93.141.38
 
 devices_info:
-  device_ips: [10.93.141.20, 10.93.141.28, 10.93.141.17]
+  device_ips: [10.93.141.20, 10.93.141.28, 10.93.141.19]
   device_roles: [control-plane, border, edge]
 
 fabric_info:
@@ -72,7 +72,7 @@ border_devices:
   transit_vlan: 602
 
 edge_devices:
-  ip: [10.93.141.17]
+  ip: [10.93.141.19]
 
 auth_profile:
   name: No Authentication
