@@ -285,11 +285,11 @@ def main():
 
     border_device_ip = project_data['border_devices']['ip'][0]
     routing_protocol = project_data['border_devices']['routing_protocol']
-    internal_bpg_as = project_data['border_devices']['internal_bgp_as']
-    external_bpg_as = project_data['border_devices']['external_bgp_as']
+    internal_bpg_as = str(project_data['border_devices']['internal_bgp_as'])
+    external_bpg_as = str(project_data['border_devices']['external_bgp_as'])
     external_interface_name = project_data['border_devices']['external_interface']
     transit_network = project_data['border_devices']['transit_network']
-    transit_vlan = project_data['border_devices']['transit_vlan']
+    transit_vlan = str(project_data['border_devices']['transit_vlan'])
 
     control_plane_device_ips = project_data['control_plane_devices']['ip']
     edge_device_ips = project_data['edge_devices']['ip']
